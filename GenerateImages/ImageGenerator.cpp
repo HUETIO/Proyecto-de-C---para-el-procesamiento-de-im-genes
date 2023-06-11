@@ -56,6 +56,7 @@ void ImageGenerator::CreateDirectory(const std::string& path)
 
 void ImageGenerator::SaveGeneratedImage(const std::string& filename, const std::vector<unsigned short>& image)
 {
+    //Ajustar o Crear nuevo nombre de carpeta aqui:
     std::string folderPath = "imagenes_generadas";
 
     // Comprobar si la carpeta existe, si no, crearla
