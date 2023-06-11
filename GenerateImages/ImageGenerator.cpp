@@ -1,13 +1,10 @@
 #include "ImageGenerator.h"
-#include <iostream>
-#include <fstream>
-
 std::vector<unsigned short> ImageGenerator::ReadImageFile(const std::string& filename, int imageSize)
 {
     std::ifstream file(filename, std::ios::binary);
     std::vector<unsigned short> image(imageSize);
 
-    if (file.is_open())
+    if (file)
     {
         file.read(reinterpret_cast<char*>(image.data()), imageSize * sizeof(unsigned short));
         file.close();
@@ -24,7 +21,7 @@ void ImageGenerator::WriteImageFile(const std::string& filename, const std::vect
 {
     std::ofstream file(filename, std::ios::binary);
 
-    if (file.is_open())
+    if (file)
     {
         file.write(reinterpret_cast<const char*>(image.data()), image.size() * sizeof(unsigned short));
         file.close();
@@ -47,10 +44,14 @@ std::vector<unsigned short> ImageGenerator::GenerateDifferenceImage(const std::v
     return differenceImage;
 }
 
+bool ImageGenerator::DirectoryExists(const std::string& path)
+{
+    return _access(path.c_str(), 0) == 0;
+}
+
 void ImageGenerator::CreateDirectory(const std::string& path)
 {
-    // TODO: Implementar la creación del directorio en una forma compatible con C++ pre-C++17
-    // Puedes utilizar funciones de la biblioteca estándar de C o bibliotecas externas para esto.
+    _mkdir(path.c_str());
 }
 
 void ImageGenerator::SaveGeneratedImage(const std::string& filename, const std::vector<unsigned short>& image)
@@ -58,7 +59,10 @@ void ImageGenerator::SaveGeneratedImage(const std::string& filename, const std::
     std::string folderPath = "imagenes_generadas";
 
     // Comprobar si la carpeta existe, si no, crearla
-    CreateDirectory(folderPath);
+    if (!DirectoryExists(folderPath))
+    {
+        CreateDirectory(folderPath);
+    }
 
     // Combinar la ruta de la carpeta con el nombre del archivo
     std::string fullPath = folderPath + "/" + filename;
